@@ -1,4 +1,4 @@
- pragma solidity ^0.5.0;
+ pragma solidity 0.5.11;
 
     // Splitting mony from one account into two accounts equally.
 
