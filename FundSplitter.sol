@@ -1,19 +1,13 @@
-pragma solidity 0.5.11;
+ pragma solidity ^0.5.0;
 
     // Splitting mony from one account into two accounts equally.
 
-contract Splitter{ 
+contract Splitter{
     
-    mapping(address => uint)balance;
-    address[] addresses;
-    modifier canWithdraw(){
-        for(uint i=0; i<addresses.length; i++){
-            if(addresses[i] == msg.sender && balance[address(msg.sender)] > 0){
-                _;
-            }
-            
-        }
-    }
+    mapping(address => uint) public balances;
+    event logSplitFund(address, address);
+    event logWithdraw(address, uint);
+     
     function splitFund(address payable  _address1, address payable _address2)public payable{ 
         
         uint remainder = msg.value % 2;
@@ -26,25 +20,24 @@ contract Splitter{
         //If the amount passed odd in wei
         //Send 1 wei back to the invocker
         msg.sender.transfer(1 wei); 
-        
-        balance[_address1] = half;
-        balance[_address2] = half;
-        addresses.push(_address1);
-        addresses.push(_address2);
+        balances[_address1] = half;
+        balances[_address2] = half;
+        emit logSplitFund(_address1, _address2);
         }else{
-            
         
-        balance[_address1] = half;
-        balance[_address2] = half; 
-        addresses.push(_address1);
-        addresses.push(_address2);
+        //If the amount is even
+        balances[_address1] = half;
+        balances[_address2] = half; 
+        emit logSplitFund(_address1, _address2);
         }
     }
     
-    //By this function, the fund owners will get their funds, associated with their address 
-    function withdrawFund()public payable canWithdraw{
-                msg.sender.transfer(balance[address(msg.sender)]);
-                balance[address(msg.sender)] = 0;
-                
+    //By this function, every Fund owner can withdraw their funds by theirself
+    function withdrawFund(uint _amount)public returns(bool) {
+        require(balances[msg.sender] >= _amount);
+        balances[msg.sender] -= _amount;
+        msg.sender.transfer(_amount);
+        emit logWithdraw(msg.sender, _amount);
+        return true;
     }
 }
