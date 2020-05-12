@@ -1,3 +1,2 @@
 # Fund Splitter Contract
-Solidty contract, Splitting mony from one account into two diffrent accuounts equally.
-And the accounts owners who got the funds can claim and get their funds.
+Solidty contract, Which Splits funds into two and transfer to two accounts equally, And the accounts who recieves the funds can claim and get the funds in their accounts.
